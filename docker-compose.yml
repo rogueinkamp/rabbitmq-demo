@@ -1,0 +1,50 @@
+version: "3.2"
+services:
+  rabbitmq:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        buildno: 1
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15671:15671
+      - 15672:15672
+    volumes:
+      - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
+      - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/mnesia
+      - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
+      - ./.docker/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+    networks:
+      - rabbitmq
+
+  python-publisher:
+    build:
+      context: ./python-publisher
+      dockerfile: Dockerfile
+      args:
+        buildno: 1
+    container_name: 'python-publisher'
+    depends_on:
+      - rabbitmq
+    networks:
+      - rabbitmq
+
+  python-subscriber:
+    build:
+      context: ./python-subscriber
+      dockerfile: Dockerfile
+      args:
+        buildno: 1
+    container_name: 'python-subscriber'
+    restart: always
+    depends_on:
+      - rabbitmq
+    networks:
+      - rabbitmq
+
+networks:
+  rabbitmq:
+    external:
+      name: rabbitmq
