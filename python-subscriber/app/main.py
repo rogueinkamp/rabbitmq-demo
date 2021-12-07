@@ -9,7 +9,7 @@ stream_handler = logging.StreamHandler()
 stream_handler.setLevel(logging.INFO)
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(name)s - %(levelname)-8s - [ %(filename)s:%(lineno)s ] - %(funcName)s - %(message)s',
     handlers=[stream_handler]
 )
@@ -17,7 +17,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def callback(ch, method, properties, body):
-    logger.info(
+    logger.debug(
         "CALLBACK | ch=%s, method=%s, properties=%s, body=%s",
         ch,
         method,

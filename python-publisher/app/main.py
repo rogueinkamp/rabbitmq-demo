@@ -19,6 +19,9 @@ logging.basicConfig(
     handlers=[stream_handler]
 )
 
+for _logger in ("pika.connection", "pika.adapters", "pika.channel"):
+    logging.getLogger(_logger).setLevel(logging.WARNING)
+
 logger = logging.getLogger(__name__)
 
 
