@@ -14,7 +14,7 @@ logging.basicConfig(
     handlers=[stream_handler]
 )
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("python-subscriber")
 
 def callback(ch, method, properties, body):
     logger.debug(
@@ -41,6 +41,7 @@ def main():
     params = pika.URLParameters(url)
     connection = pika.BlockingConnection(params)
     channel = connection.channel()
+    channel.exchange_declare(exchange='test-exchange', exchange_type='direct', durable=True)
     channel.queue_declare(queue='python-testing')
     # set up subscription on the queue
     channel.basic_consume(
