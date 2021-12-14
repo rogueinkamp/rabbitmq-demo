@@ -22,15 +22,15 @@ logging.basicConfig(
 for _logger in ("pika.connection", "pika.adapters", "pika.channel"):
     logging.getLogger(_logger).setLevel(logging.WARNING)
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("python-publisher")
 
 
 def random_message():
-    word = ['Deer', 'Dog', 'Cat', 'Queen', 'Bird']
-    return ' '.join(random.sample(word, 3))
+    words = ['Deer', 'Dog', 'Cat', 'Queen', 'Bird', 'Horse', 'Cow', 'Monkey']
+    return ' '.join(random.sample(words, len(words)))
 
 
-@tl.job(interval=timedelta(minutes=1))
+@tl.job(interval=timedelta(seconds=10))
 def main():
     connection = None
     channel = None
@@ -50,8 +50,8 @@ def main():
     if channel:
         try:
             message = random_message()
-            channel.basic_publish(exchange='', routing_key='python-testing', body=message)
-            logger.info("Message sent to consumer")
+            channel.basic_publish(exchange='test-exchange', routing_key='', body=message)
+            logger.info("Message sent to consumer -> %s", message)
             if connection:
                 connection.close()
         except Exception as err:

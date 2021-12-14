@@ -28,11 +28,16 @@ def callback(ch, method, properties, body):
 
 
 def process_function(msg):
-    msg = msg.decode() if isinstance(msg, bytes) else str(msg)
-    logger.info("PYTHON_SUBSCRIBER_MESSAGE_RECEIVED: %s", msg)
-    time.sleep(5)
-    logger.info("Processing finished");
-    return
+    success = False
+    try:
+        msg = msg.decode() if isinstance(msg, bytes) else str(msg)
+        logger.info("PYTHON_SUBSCRIBER_MESSAGE_RECEIVED: %s", msg)
+        success = True
+    except Exception as err:
+        logger.error(err)
+    finally:
+        time.sleep(5)
+    return success
 
 
 def main():
@@ -42,7 +47,7 @@ def main():
     connection = pika.BlockingConnection(params)
     channel = connection.channel()
     channel.exchange_declare(exchange='test-exchange', exchange_type='direct', durable=True)
-    channel.queue_declare(queue='python-testing')
+    channel.queue_declare(queue='python-testing', auto_delete=False)
     # set up subscription on the queue
     channel.basic_consume(
         'python-testing',

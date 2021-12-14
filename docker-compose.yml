@@ -57,7 +57,21 @@ services:
       - rabbitmq
     networks:
       - rabbitmq
+    stdin_open: true
+    tty: true
 
+  rust-subscriber:
+    build:
+      context: ./rust-subscriber
+      dockerfile: Dockerfile
+      args:
+        buildno: 1
+    container_name: 'rust-subscriber'
+    restart: always
+    depends_on:
+      - rabbitmq
+    networks:
+      - rabbitmq
 
 networks:
   rabbitmq:
