@@ -37,6 +37,8 @@ executables:
     - haskell-subscriber
     - bytestring
     - amqp
+    - text>=1.2.4.1
+    - conduit
 
 tests:
   haskell-subscriber-test:

@@ -30,7 +30,4 @@ RUN apt-get update
 RUN apt-get install -y dnsutils netcat
 
 COPY --from=haskell /opt/build/Main /Main
-COPY ./app/start.sh /start.sh
-# RUN chmod +x /start.sh
-# ENTRYPOINT ["./start.sh"]
-ENTRYPOINT ["/Main"]
+CMD ["/Main"]
