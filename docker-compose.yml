@@ -73,6 +73,19 @@ services:
     networks:
       - rabbitmq
 
+  golang-subscriber:
+    build:
+      context: ./golang-subscriber
+      dockerfile: Dockerfile
+      args:
+        buildno: 1
+    container_name: 'golang-subscriber'
+    restart: always
+    depends_on:
+      - rabbitmq
+    networks:
+      - rabbitmq
+
 networks:
   rabbitmq:
     external:
