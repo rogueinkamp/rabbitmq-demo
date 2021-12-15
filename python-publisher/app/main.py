@@ -26,7 +26,7 @@ logger = logging.getLogger("python-publisher")
 
 
 def random_message():
-    words = ['Deer', 'Dog', 'Cat', 'Queen', 'Bird', 'Horse', 'Cow', 'Monkey']
+    words = ['Deer', 'Dog', 'Cat', 'Queen', 'Bird', 'Horse', 'Cow', 'Monkey', 'Snake', 'Fish', 'Beetle', 'Rabbit', 'Dolphin', 'Lizard']
     return ' '.join(random.sample(words, len(words)))
 
 

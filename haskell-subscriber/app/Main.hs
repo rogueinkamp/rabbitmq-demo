@@ -20,23 +20,19 @@ testExchange = "test-exchange"
 
 main :: IO ()
 main = do
+    putStrLn "CONNECTING..."
     conn <- openConnection "rabbitmq" "/" "guest" "guest"
     ch   <- openChannel conn
 
     (q, _, _) <- declareQueue ch newQueue {queueName       = "python-testing",
                                            queueAutoDelete = False,
                                            queueDurable    = False}
+
+    declareExchange ch newExchange {exchangeName = testExchange, exchangeType = "direct"}
     bindQueue ch q testExchange ""
 
+    putStrLn "RUNNING..."
     eventListener ch q conn
-
--- I docker seems like getLine does not seem to block when needed
-loop :: IO ()
-loop =
-    do line <- getLine
-       eof  <- isEOF
-       putStrLn $ "output: " ++ line
-       unless eof loop
 
 
 eventListener :: Channel -> Text -> Connection -> IO ()
@@ -44,15 +40,14 @@ eventListener channel queue connection = do
     BL.putStrLn " [*] Waiting for messages. To exit press CTRL+C"
     consumeMsgs channel queue Ack deliveryHandler
 
-    loop
+    forever (getLine >>= putStrLn)
     closeConnection connection
 
 
 deliveryHandler :: (Message, Envelope) -> IO ()
 deliveryHandler (msg, metadata) = do
-  BL.putStrLn $ " [x] HASKELL_MESSAGE_RECEIVED: " <> body
+  BL.putStrLn $ "HASKELL_MESSAGE_RECEIVED -> " <> body
   threadDelay (1000000 * n)
-  BL.putStrLn " [x] DONE"
   ackEnv metadata
   where
     body = msgBody msg

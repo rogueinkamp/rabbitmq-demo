@@ -2,3 +2,5 @@
 .docker/rabbitmq/logs
 *.venv
 target/*
+*/target/
+*/target/*

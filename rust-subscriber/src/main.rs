@@ -2,6 +2,13 @@
 // in one shell, and run the hello_world_publish example in another.
 use amiquip::{Connection, ConsumerMessage, ConsumerOptions, QueueDeclareOptions, Result};
 
+
+fn split_message(input_string: &str) -> Vec<String> {
+    let vec = input_string.split_whitespace().map(str::to_string).collect();
+    vec
+}
+
+
 fn main() -> Result<()> {
     // Open connection.
     let mut connection = Connection::insecure_open("amqp://guest:guest@rabbitmq:5672")?;
@@ -20,7 +27,8 @@ fn main() -> Result<()> {
         match message {
             ConsumerMessage::Delivery(delivery) => {
                 let body = String::from_utf8_lossy(&delivery.body);
-                println!("RUST_MESSAGE_RECEIVED -> {}", body);
+                let vector_of_strings = split_message(&body.to_string());
+                println!("RUST_MESSAGE_RECEIVED -> {:?}", vector_of_strings);
                 consumer.ack(delivery)?;
             }
             other => {
