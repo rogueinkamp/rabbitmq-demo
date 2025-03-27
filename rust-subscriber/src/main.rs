@@ -1,13 +1,9 @@
-// Port of https://www.rabbitmq.com/tutorials/tutorial-one-python.html. Run this
-// in one shell, and run the hello_world_publish example in another.
 use amiquip::{Connection, ConsumerMessage, ConsumerOptions, QueueDeclareOptions, Result};
-
 
 fn split_message(input_string: &str) -> Vec<String> {
     let vec = input_string.split_whitespace().map(str::to_string).collect();
     vec
 }
-
 
 fn main() -> Result<()> {
     // Open connection.
@@ -37,6 +33,5 @@ fn main() -> Result<()> {
             }
         }
     }
-
     connection.close()
 }

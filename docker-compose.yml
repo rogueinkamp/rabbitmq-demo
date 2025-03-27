@@ -1,4 +1,3 @@
-version: "3.2"
 services:
   rabbitmq:
     build:
@@ -45,21 +44,6 @@ services:
     networks:
       - rabbitmq
 
-  haskell-subscriber:
-    build:
-      context: ./haskell-subscriber
-      dockerfile: Dockerfile
-      args:
-        buildno: 1
-    container_name: 'haskell-subscriber'
-    restart: always
-    depends_on:
-      - rabbitmq
-    networks:
-      - rabbitmq
-    stdin_open: true
-    tty: true
-
   rust-subscriber:
     build:
       context: ./rust-subscriber
@@ -88,5 +72,4 @@ services:
 
 networks:
   rabbitmq:
-    external:
-      name: rabbitmq
+    driver: bridge

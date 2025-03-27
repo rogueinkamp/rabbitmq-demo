@@ -1,32 +1,38 @@
-FROM rust:1.57 as builder
+# NOTE: Do not use latest, pin your versions!
+FROM rust:1.85 AS builder
 
-RUN USER=root cargo new --bin rust-subscriber
-WORKDIR ./rust-subscriber
-COPY ./Cargo.toml ./Cargo.toml
+WORKDIR /app
+
+# Install openssl development libraries
+RUN apt-get update && apt-get install -y libssl-dev
+
+# Copy Cargo files and build dependencies
+COPY Cargo.toml Cargo.lock ./
+
+# Copy source code
+COPY src ./src
+
+# Build the application
 RUN cargo build --release
-RUN rm src/*.rs
 
-ADD . ./
+# Runtime image
+# FROM debian:bullseye-slim
+FROM rust:1.85
 
-RUN rm -r ./target/release/deps/
-RUN cargo build --release
-
-
-FROM debian:buster-slim
 ARG APP=/usr/src/app
 
-RUN apt-get update \
-    && apt-get install -y ca-certificates tzdata \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y ca-certificates tzdata && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV TZ=Etc/UTC \
     APP_USER=appuser
 
-RUN groupadd $APP_USER \
-    && useradd -g $APP_USER $APP_USER \
-    && mkdir -p ${APP}
+RUN groupadd $APP_USER && \
+    useradd -g $APP_USER $APP_USER && \
+    mkdir -p ${APP}
 
-COPY --from=builder /rust-subscriber/target/release/rust-subscriber ${APP}/rust-subscriber
+COPY --from=builder /app/target/release/rust-subscriber ${APP}/rust-subscriber
 
 RUN chown -R $APP_USER:$APP_USER ${APP}
 
