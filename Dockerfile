@@ -7,18 +7,21 @@ ENV RABBITMQ_PASSWORD rabbitmq
 ENV RABBITMQ_PID_FILE /var/lib/rabbitmq/mnesia/rabbitmq
 ENV USER=rabbitmq
 
-# Ensure correct user permissions for alpine
-RUN apk --no-cache add shadow && \
-    usermod -u 1001 rabbitmq && \
-    groupmod -g 1000 rabbitmq
+# Set the correct permissions
+RUN chown rabbitmq:rabbitmq /etc/rabbitmq/enabled_plugins
 
 # Enable the webui (very handy)
 RUN rabbitmq-plugins enable --offline rabbitmq_management
 
-EXPOSE 15671 15672
+EXPOSE 5672 15671 15672
 
 # Add Healthcheck
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD rabbitmqctl status
+
+RUN chgrp rabbitmq /etc/rabbitmq
+RUN chmod g+r /etc/rabbitmq
+
+RUN chmod a+r /etc/rabbitmq/enabled_plugins
 
 # Define default command
 CMD ["rabbitmq-server"]

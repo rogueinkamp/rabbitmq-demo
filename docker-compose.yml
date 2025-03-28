@@ -12,10 +12,13 @@ services:
       - 15671:15671
       - 15672:15672
     volumes:
-      - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
-      - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/mnesia
-      - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
-      - ./.docker/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+      - rabbitmq_etc:/etc/rabbitmq/
+      - rabbitmq_data:/var/lib/rabbitmq/mnesia
+      - rabbitmq_logs:/var/log/rabbitmq/
+    configs:
+      - source: plugins
+        target: /etc/rabbitmq/enabled_plugins
+        mode: 0644
     networks:
       - rabbitmq
 
@@ -73,3 +76,15 @@ services:
 networks:
   rabbitmq:
     driver: bridge
+
+volumes:
+  rabbitmq_etc:
+    driver: local
+  rabbitmq_data:
+    driver: local
+  rabbitmq_logs:
+    driver: local
+
+configs:
+  plugins:
+    content: "[rabbitmq_management, rabbitmq_mqtt]."  
