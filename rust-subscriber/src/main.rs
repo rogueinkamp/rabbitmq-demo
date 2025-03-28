@@ -33,7 +33,7 @@ fn main() -> Result<()> {
                 let queue = channel.queue_declare(
                     queue_name,
                     QueueDeclareOptions {
-                        durable: false,
+                        durable: true,
                         exclusive: false,
                         auto_delete: false,
                         arguments: FieldTable::default(),
@@ -44,7 +44,7 @@ fn main() -> Result<()> {
                     amiquip::ExchangeType::Topic,
                     exchange_name,
                     ExchangeDeclareOptions {
-                        durable: false,
+                        durable: true,
                         auto_delete: false,
                         internal: false,
                         arguments: FieldTable::default(),
@@ -55,7 +55,7 @@ fn main() -> Result<()> {
                     amiquip::ExchangeType::Topic,
                     exchange_name,
                     ExchangeDeclareOptions {
-                        durable: false,
+                        durable: true,
                         auto_delete: false,
                         internal: false,
                         arguments: FieldTable::default(),

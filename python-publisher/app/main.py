@@ -147,7 +147,7 @@ def setup() -> bool:
             global_channel = global_connection.channel()
             if declare_exchange(global_channel, global_exchange_name, global_exchange_type) is False:
                 raise NoExchangeException("Exchange Declaration Failed")
-            global_channel.queue_declare(queue='python-testing')  # type: ignore
+            global_channel.queue_declare(queue='python-testing', durable=True)  # type: ignore
             logger.info("Publisher setup completed, now starting job timer")
             return True
         except Exception as err:
